@@ -1,20 +1,19 @@
 import { useState } from 'react'
-import Navbar from './component/Navbar'
-import Banner from './component/Banner'
-import Footer from './component/Footer'
-import Freebook from './component/Freebook';
-
+import Home from './component/Home';
+import Courses from './component/Courses.jsx' 
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
 
   return (
-    <>
-       <Navbar />
-       <Banner/>
-       <Freebook/>
-       <Footer/>
-    </>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/course" element={<Courses />} />
+    </Routes>
+    </BrowserRouter>
+     
   )
 }
 
-export default App
+export default App;
