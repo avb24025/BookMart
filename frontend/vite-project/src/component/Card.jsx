@@ -3,7 +3,7 @@ import react from 'react';
 function Card({ book }) {
     return (
         <>
-        <div className="card bg-base-100 w-80 md:w-90 shadow-sm hover:scale-105 duration-300">
+        <div className="card bg-base-100 w-80 md:w-90 shadow-sm hover:scale-105 duration-300 dark:bg-white dark:text-black">
   <figure>
     <img
       src={book.image}

@@ -6,9 +6,11 @@ import Footer from './Footer.jsx';
 function Courses(){
     return (
         <>
-        <Navbar></Navbar>
+       <div className='dark:bg-white dark:text-black'>
+         <Navbar></Navbar>
         <Course></Course>
         <Footer></Footer>
+       </div>
         </>
     )
 };

@@ -7,10 +7,12 @@ function App() {
 
   return (
     <BrowserRouter>
-    <Routes>
+   <div className='dark:bg-white dark:text-black'>
+     <Routes >
       <Route path="/" element={<Home />} />
       <Route path="/course" element={<Courses />} />
     </Routes>
+   </div>
     </BrowserRouter>
      
   )

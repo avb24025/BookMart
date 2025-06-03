@@ -44,7 +44,7 @@ function Freebook() {
     };
 
     return (
-        <div className='mt-3 md:mt-10 mx-4 md:mx-20 pb-10'>
+        <div className='mt-3 md:mt-10 mx-4 md:mx-20 pb-10 dark:bg-white dark:text-black'>
             <h1 className='text-xl font-bold'>
                 Free Offered Courses!!
             </h1>
