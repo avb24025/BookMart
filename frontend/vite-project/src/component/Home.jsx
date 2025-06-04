@@ -7,10 +7,12 @@ import Footer from './Footer';
  function Home() {
     return (
         <>
-        <Navbar/>
+        <div className='dark:bg-white dark:text-black'>
+            <Navbar/>
         <Banner/>
         <Freebook/>
         <Footer/>
+        </div>
         </>
     )
  };
