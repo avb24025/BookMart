@@ -8,7 +8,7 @@ function App() {
 
   return (
     <BrowserRouter>
-   <div className='dark:bg-white dark:text-black'>
+   <div className=''>
      <Routes >
       <Route path="/" element={<Home />} />
       <Route path="/course" element={<Courses />} />
