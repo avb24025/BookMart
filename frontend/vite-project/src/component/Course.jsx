@@ -1,8 +1,26 @@
-import react from 'react';
-import Books from '../../public/Books.json';
+import react, { use, useEffect,useState } from 'react';
+// import Books from '../../public/Books.json';
 import Card from './Card.jsx';
+import axios from 'axios';
+
 function Course(){
-     console.log(Books);
+    const [Books, setBooks] = useState([]);
+   
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/api/books/allbooks'); 
+                setBooks(response.data)// Adjust the endpoint as needed
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        };
+
+        fetchBooks();
+    }, []);
+
+    //  console.log(Books);
     return(
         <>
       <div className='pt-20 md:pt-20 dark:bg-white dark:text-black'>

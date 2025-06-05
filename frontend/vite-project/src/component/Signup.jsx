@@ -1,118 +1,117 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Login from './Login';
+import { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
+import Navbar from './Navbar';
 
 function Signup() {
-    // Add state for form inputs
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
-    // Handle input changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+  const [formData, setFormData] = useState({
+    fullname: '',
+    email: '',
+    password: '',
+  });
 
-    // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form Data:', formData);
-        // Add your form submission logic here
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center ">
-           
-            <div className="relative p-8 rounded-lg shadow-lg w-96 ">
-               <Link to='/'>
-               <button className="btn btn-circle btn-ghost absolute right-2 top-2">✕</button>   
-               </Link>
-                <h1 className="text-2xl font-bold text-center mb-6 text-white dark:text-black">
-                    Create Your Account
-                </h1>
-                
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="space-y-2">
-                        <label className="block text-white text-sm font-medium dark:text-black">
-                            Full Name
-                        </label>
-                        <input 
-                            type="text" 
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={handleInputChange}
-                            placeholder="Enter your full name" 
-                            className="input input-bordered w-full bg-white text-gray-800" 
-                        />
-                    </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:4000/api/user/signup', formData);
 
-                    <div className="space-y-2">
-                        <label className="block text-white text-sm font-medium dark:text-black">
-                            Email Address
-                        </label>
-                        <input 
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            placeholder="Enter your email" 
-                            className="input input-bordered w-full bg-white text-gray-800" 
-                        />
-                    </div>
+      if (res.status === 200) {
+        login(res.data.token);
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred during signup');
+    }
+  };
 
-                    <div className="space-y-2">
-                        <label className="block text-white text-sm font-medium dark:text-black">
-                            Password
-                        </label>
-                        <input 
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            placeholder="Create a password" 
-                            className="input input-bordered w-full bg-white text-gray-800" 
-                        />
-                    </div>
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
-                    <div className="space-y-2">
-                        <label className="block text-white text-sm font-medium dark:text-black">
-                            Confirm Password
-                        </label>
-                        <input 
-                            type="password"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
-                            placeholder="Confirm your password" 
-                            className="input input-bordered w-full bg-white text-gray-800" 
-                        />
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        className="btn btn-primary w-full mt-6 bg-pink-500 text-black dark:text-black"
-                    >
-                        Sign Up
-                    </button>
-
-                    <p className="text-center text-white mt-4 dark:text-black">
-                        Already have an account? 
-                        <span 
-                        onClick={()=>document.getElementById('my_modal_3').showModal()}
-                        className="text-white font-bold hover:underline ml-1 dark:text-black">Log in</span>
-                    </p>
-                    <Login/>
-                </form>
-            </div>
+  return (
+    
+    <>
+    <Navbar />
+    <div className="min-h-screen flex items-center justify-center bg-gray-800 dark:bg-gray-900">
+      {/* Error Notification */}
+      {error && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
+          <div role="alert" className="alert alert-error justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{error}</span>
+          </div>
         </div>
-    );
+      )}
+
+      <div className="relative p-8 rounded-lg shadow-lg w-96 bg-white dark:bg-gray-800">
+        <Link to='/'>
+          <button className="btn btn-circle btn-ghost absolute right-2 top-2 text-lg">✕</button>
+        </Link>
+
+        <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
+          Create Your Account
+        </h1>
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+            <input
+              type="text"
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleInputChange}
+              placeholder="Enter your full name"
+              className="input input-bordered w-full bg-white text-gray-800"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Enter your email"
+              className="input input-bordered w-full bg-white text-gray-800"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Create a password"
+              className="input input-bordered w-full bg-white text-gray-800"
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary w-full mt-4">
+            Sign Up
+          </button>
+        </form>
+      </div>
+    </div>
+    </>
+  );
 }
 
 export default Signup;

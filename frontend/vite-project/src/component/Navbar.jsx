@@ -1,9 +1,12 @@
 import React from 'react';  
-import { useEffect, useState } from 'react';
+import { useEffect, useState ,useContext} from 'react';
 import {Link} from 'react-router-dom';
 import Login from './Login';
+import { AuthContext } from '../context/AuthContext';
 
 function Navbar() {
+  const { user,logout } = useContext(AuthContext);
+  console.log("User in Navbar:", user);
   const [sticky, setSticky] = useState(false);
   const [theme,setTheme]= useState(localStorage.getItem("theme") ? localStorage.getItem("theme") :"dark");
   
@@ -115,10 +118,24 @@ function Navbar() {
 </label>
 
           {/* Login Button */}
-          <a className="btn "
+          {user ? (
+              <button
+              onClick={() => {
+                logout();} 
+              }
+                className="btn btn-error">Logout</button>
+          ) : (
+            <div>
+            <a className="btn "
           onClick={()=>document.getElementById('my_modal_3').showModal()}
           >Login</a>
           <Login/>
+          </div>
+          )}
+          
+          {/* Login Modal */}
+          
+
         </div>
       </div>
     </>

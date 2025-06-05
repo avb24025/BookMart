@@ -1,73 +1,114 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 function Login() {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const { login } = useContext(AuthContext);
 
-    // Handle input changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
-    // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Login Data:', formData);
-        // Add your login logic here
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:4000/api/user/login', formData);
 
-    return (
-        <div className=''>
-            <dialog id="my_modal_3" className="modal">
-                <div className="modal-box">
-                    <form method="dialog">
-                       <Link to='/'> 
-                        <button className="btn color-white btn-circle btn-ghost absolute right-2 top-2">✕</button></Link>
-                    </form>
-                    <h1 className='text-2xl font-bold text-center mb-4 text-white'>
-                        Log in to Your Account
-                    </h1>
-                    <form onSubmit={handleSubmit}>
-                        <div className='text-white pt-5'>
-                            <h1>Enter Your Email</h1>
-                            <input
-                                type='email'
-                                name='email'
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                placeholder='Enter your email'
-                                className='input input-bordered w-full max-w-xs mb-4'
-                            />
-                        </div>
-                        <div className='text-white'>
-                            <h1>Password</h1>
-                            <input
-                                type='password'
-                                name='password'
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                placeholder='Enter your password'
-                                className='input input-bordered w-full max-w-xs mb-4'
-                            />
-                        </div>
-                        <div className="flex justify-between items-center px-4">
-                            <button type="submit" className="btn btn-secondary">Login</button>
-                            <span className="text-white">
-                                Not registered? <Link to="/signup" className="underline text-blue-300">Signup</Link>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            </dialog>
+      if (res.status === 200) {
+        const token = res.data.token;
+        login(token);
+
+        // Close the modal
+        const modal = document.getElementById('my_modal_3');
+        if (modal) modal.close();
+
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid credentials');
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  return (
+    <>
+      {/* 🔴 Error Notification on Screen Top Center */}
+      {error && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md">
+          <div role="alert" className="alert alert-error justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{error}</span>
+          </div>
         </div>
-    );
+      )}
+
+      {/* 🔐 Login Modal */}
+      <dialog id="my_modal_3" className="modal">
+        <div className="modal-box">
+          <button
+            className="btn btn-circle btn-ghost absolute right-2 top-2"
+            onClick={() => document.getElementById('my_modal_3').close()}
+          >✕</button>
+
+          <h1 className='text-2xl font-bold text-center mb-4 text-white'>
+            Log in to Your Account
+          </h1>
+
+          <form onSubmit={handleSubmit}>
+            <div className='text-white pt-5'>
+              <label className="block mb-1">Enter Your Email</label>
+              <input
+                type='email'
+                name='email'
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder='Enter your email'
+                className='input input-bordered w-full mb-4'
+                required
+              />
+            </div>
+            <div className='text-white'>
+              <label className="block mb-1">Password</label>
+              <input
+                type='password'
+                name='password'
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder='Enter your password'
+                className='input input-bordered w-full mb-4'
+                required
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <button type="submit" className="btn btn-secondary">Login</button>
+              <span className="text-white">
+                Not registered? <Link to='/signup' className="underline text-blue-300">Signup</Link>
+              </span>
+            </div>
+          </form>
+        </div>
+      </dialog>
+    </>
+  );
 }
 
 export default Login;
