@@ -11,7 +11,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: 'https://books-mart.vercel.app/', // Replace with your actual frontend URL
+  origin: 'https://books-mart.vercel.app', // your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 app.use(express.json());
