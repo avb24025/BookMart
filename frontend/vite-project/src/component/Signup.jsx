@@ -39,7 +39,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:4000/api/user/signup', formData);
+      const res = await axios.post('https://book-mart-backend.vercel.app/api/user/signup', formData);
 
       if (res.status === 200) {
         login(res.data.token);
