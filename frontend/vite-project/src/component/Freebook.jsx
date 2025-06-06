@@ -13,7 +13,7 @@ function Freebook() {
     useEffect(() => {
         const fetchBooks = async () => {    
             try {
-                const response = await axiox.get('https://book-mart-backend.vercel.app/api/books/allbooks');
+                const response = await axiox.get('https://book-mart-weld.vercel.app/api/books/allbooks');
                 // Assuming the response data is an array of books
                 console.log(response.data);
                 const filterbook = response.data.filter((book) => book.category === "Free");

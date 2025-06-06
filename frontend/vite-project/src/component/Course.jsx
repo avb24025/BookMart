@@ -10,7 +10,7 @@ function Course(){
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get('https://book-mart-backend.vercel.app/api/books/allbooks'); 
+                const response = await axios.get('https://book-mart-weld.vercel.app/api/books/allbooks'); 
                 setBooks(response.data)// Adjust the endpoint as needed
                 console.log(response.data);
             } catch (error) {
