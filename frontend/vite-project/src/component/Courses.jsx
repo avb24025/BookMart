@@ -7,14 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 
 function Courses(){
-    const { user } = useContext(AuthContext);
+    const { user,loading } = useContext(AuthContext);
     const navigate = useNavigate();
-    useEffect(() => {
-    if (!user) {
-      navigate('/'); // Redirect to login if user is not authenticated
-    }
-  }, [user, navigate]);
-    
 
     return (
         <>

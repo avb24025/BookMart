@@ -1,10 +1,26 @@
 import { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate,useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import Navbar from './Navbar';
 
 function Signup() {
+
+  const location = useLocation();
+  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+  if (location.state?.fromProtected) {
+    setShowAlert(true);
+
+    const timer = setTimeout(() => {
+      setShowAlert(false);
+    }, 3000); // Hide alert after 3 seconds
+
+    return () => clearTimeout(timer);
+  }
+}, [location]);
+
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -45,6 +61,7 @@ function Signup() {
     
     <>
     <Navbar />
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-800 dark:bg-gray-900">
       {/* Error Notification */}
       {error && (
